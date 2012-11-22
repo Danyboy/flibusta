@@ -344,7 +344,7 @@ function _makeShelvedBooksCatalog($enableConverters) {
     $postponedBooks = $shelfDAO->getPostponedBooks($userId);
 
     foreach($postponedBooks as $postponedBook) {
-        $book = $bookDAO->getBook($postponedBook->getBookId());
+        $book = $bookDAO->getBook($postponedBook->getBookId(), true);
         if (!$book) {
             continue;
         }
@@ -529,7 +529,7 @@ function _createCompleteBookEntry(Book $book, $enableConverters)
     foreach ($authors as $author) {
         $entry->addItem(_createBookAuthor($author));
         $entry->addLink(OPDS_CATALOG_ROOT . '/' . OPDS_AUTHOR_BOOKS_CATALOG . '/' . $author->getId(),
-                        'related', 'application/atom+xml;profile=opds-catalog', false, 'Все книги автора ' . _composeAuthorName($author));
+                        'related', 'application/atom+xml', false, 'Все книги автора ' . _composeAuthorName($author));
 
     }
 
@@ -543,7 +543,9 @@ function _createCompleteBookEntry(Book $book, $enableConverters)
     }
 
     $bookFormat = $book->getFormat();
-    if ($bookFormat != 'fb2') {
+    if ($bookFormat == 'mobi') {
+        $compressFormat = 'x-mobipocket-ebook';
+    } elseif ($bookFormat != 'fb2') {
         $compressFormat = $bookFormat;
 
         // если extension файла не совпадает с форматом книги, то считаем файл упакованным
@@ -581,6 +583,10 @@ function _createCompleteBookEntry(Book $book, $enableConverters)
     }
 
     $bookDescription .= 'Формат: ' . $bookFormat . '<br/>';
+    if ($book->getLang()) {
+        $bookDescription .= 'Язык: ' . $book->getLang() . '<br/>';
+    }
+
     if ($book->getSize()) {
         $bookSize = $book->getSize();
         $sizeUnit = 'B';
@@ -603,7 +609,7 @@ function _createCompleteBookEntry(Book $book, $enableConverters)
                 $bookDescription .= ' #' . $sequence->getBooksInSequence(); // getBooksInSequence заполняется номером книги в серии
             }
             $bookDescription .= '<br/>';
-            $entry->addLink(OPDS_CATALOG_ROOT . '/' . OPDS_SEQENCE_BOOKS_CATALOG . '/' . $sequence->getId(), 'related', 'application/atom+xml;profile=opds-catalog', false,
+            $entry->addLink(OPDS_CATALOG_ROOT . '/' . OPDS_SEQENCE_BOOKS_CATALOG . '/' . $sequence->getId(), 'related', 'application/atom+xml', false,
                             'Все книги серии "' . $sequence->getName() . '"');
         }
     }
@@ -634,9 +640,9 @@ function _createCompleteBookEntry(Book $book, $enableConverters)
     if ($enableConverters && $bookFormat == 'fb2') { // converters enabled
         global $libSupportedFormats;
         foreach ($libSupportedFormats as $fmt) {
-            $convertedCompressionFormat = /* $fmt=='epub' || $fmt == 'mobi' ? '' : */ '+zip';
+            $convertedCompressionFormat =  $fmt == 'mobi' ? 'x-mobipocket-ebook' :  $fmt . '+zip';
             $entry->addLink(DEBUG_SERVER_PREFIX.'b/' . $book->getId() . '/' . $fmt,
-                            'http://opds-spec.org/acquisition/open-access', "application/$fmt$convertedCompressionFormat");
+                            'http://opds-spec.org/acquisition/open-access', "application/$convertedCompressionFormat");
         }
     } else {
         // original format only
@@ -775,8 +781,15 @@ function _makeAuthorsIndex($namePrefix)
             $catalog->addEntry($entry);
         } else {
             $authorsByName = $authorDAO->findAuthorByName($prefix, 0, null, true); // авторы с точным соответствием по фамилии
+            $bookDAO = new BookDAO();
             foreach ($authorsByName as $author) {
-                $catalog->addEntry(_createCompleteAuthorEntry($author));
+                /** @var $author Author */
+                if ($author->getBooksNumber() === null) {
+                    $author->setBooksNumber($bookDAO->countBookByAuthor($author->getId()));
+                }
+                if ($author->getBooksNumber() > 0) {
+                    $catalog->addEntry(_createCompleteAuthorEntry($author));
+                }
             }
         }
     }
@@ -821,7 +834,7 @@ function _makeBooksCatalogByAuthor($authorId, $pageNumber, $enableConverters, $d
 
     $author = $authorDAO->getAuthor($authorId);
     if (!$author) {
-        return; // author not found
+        return null; // author not found
     }
 
     $authorName = _composeAuthorName($author);
@@ -844,6 +857,7 @@ function _makeBooksCatalogByAuthor($authorId, $pageNumber, $enableConverters, $d
             $text = check_markup($annotation->getAnnotation());
 
 
+            $img = '';
             if (is_array($annotation->getAttachedFiles())) {
                 foreach ($annotation->getAttachedFiles() as $fileId => $attachedFile) {
                     if (strstr($attachedFile->filemime, 'image')) {
@@ -1146,9 +1160,15 @@ function _makeCatalogBySearch($searchTerm, $searchType, $pageNumber, $enableConv
                                   'next', 'application/atom+xml;profile=opds-catalog', true);
             }
 
+            $bookDAO = new BookDAO();
             foreach ($authors as $author) {
-                $entry = _createCompleteAuthorEntry($author);
-                $catalog->addEntry($entry);
+                /** @var $author Author */
+                if ($author->getBooksNumber() === null) {
+                    $author->setBooksNumber($bookDAO->countBookByAuthor($author->getId()));
+                }
+                if ($author->getBooksNumber() > 0) {
+                    $catalog->addEntry(_createCompleteAuthorEntry($author));
+                }
             }
         }
 
@@ -1205,7 +1225,7 @@ function _makeSequencesCatalogByAuthor($authorId, $pageNumber)
     $authorDAO = new AuthorDAO();
     $author = $authorDAO->getAuthor($authorId);
     if (!$author) {
-        return;
+        return null;
     }
 
     $catalog = _createCatalog($catalogId, 'Книжные серии ' . _composeAuthorName($author));
@@ -1241,7 +1261,7 @@ function _makeSequenceBooksCatalogByAuthor($authorId, $sequenceId, $pageNumber, 
     $sequenceDAO = new SequenceDAO();
     $sequence = $sequenceDAO->getSequence($sequenceId);
     if (!$sequence) {
-        return;
+        return null;
     }
 
     $catalog = _createCatalog($catalogId, 'Книги в серии ' . $sequence->getName());
