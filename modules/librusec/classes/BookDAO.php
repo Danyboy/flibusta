@@ -367,4 +367,22 @@ class BookDAO extends AbstractDAO
         return false;
     }
 
+    /**
+     * Посчитать количество книг автора
+     * @param string $authorId author id
+     * @return int количество книг автора
+     */
+    public function countBookByAuthor($authorId)
+    {
+        $sth = db_query(
+            'select count(1) as cnt from libbook b, libavtor a where a.bookid = b.bookid and b.deleted = 0 and a.avtorid = %d '
+                . $this->getLanguageRestriction('b.Lang'),
+            $authorId);
+        if ($sth) {
+            $value = db_result($sth);
+        } else {
+            $value = false;
+        }
+        return $value;
+    }
 }
