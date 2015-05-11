@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS libavtorname (
   KEY NoDonate (NoDonate),
   KEY Email (Email),
   KEY Homepage (Homepage),
-  FULLTEXT KEY FirstName_2 (FirstName,MiddleName,LastName)
+  KEY FirstName_2 (FirstName,MiddleName,LastName)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
  CREATE TABLE IF NOT EXISTS libbook (
@@ -201,13 +201,13 @@ CREATE TABLE IF NOT EXISTS liblog (
 CREATE TABLE IF NOT EXISTS libmass (
   ID int(10) unsigned NOT NULL auto_increment,
   Time timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  Books varchar(1000) NOT NULL,
+  Books varchar(100) NOT NULL,
   N int(11) NOT NULL,
   PRIMARY KEY  (ID),
   UNIQUE KEY Books (Books),
   KEY Time (Time),
   KEY N (N)
-) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS libpolka (
   Id int(10) unsigned NOT NULL auto_increment,
@@ -384,7 +384,7 @@ CREATE TABLE IF NOT EXISTS libavtorname_sync (
   KEY NoDonate (NoDonate),
   KEY Email (Email),
   KEY Homepage (Homepage),
-  FULLTEXT KEY FirstName_2 (FirstName,MiddleName,LastName)
+  KEY FirstName_2 (FirstName,MiddleName,LastName)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS libbook_sync (
@@ -461,29 +461,6 @@ CREATE TABLE IF NOT EXISTS libconflicts (
   KEY FirstId (FirstId),
   KEY SecondId (SecondId)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-ALTER TABLE libavtorname ADD Source tinyint(1) unsigned NOT NULL default 0;
-ALTER TABLE libavtorname ADD State tinyint(1) unsigned NOT NULL default 0;
-ALTER TABLE libavtorname ADD SourceId int(11) unsigned NOT NULL default 0;
-
-
-ALTER TABLE libavtorname DROP COLUMN Blocked;
-ALTER TABLE libbook DROP COLUMN Blocked;
 
 
 libavtorname:

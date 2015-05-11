@@ -94,6 +94,38 @@ CREATE TABLE IF NOT EXISTS `libavtorname` (
   FULLTEXT KEY `FirstName_2` (`FirstName`,`MiddleName`,`LastName`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `libbook` (
+   `BookId` int(10) unsigned NOT NULL auto_increment,
+   `FileName` varchar(12) character set latin1 collate latin1_general_ci NOT NULL default '',
+   `FileSize` int(10) unsigned NOT NULL default '0',
+   `Time` timestamp NOT NULL default CURRENT_TIMESTAMP,
+   `Title` varchar(254)  NOT NULL default '',
+   `Title1` varchar(254)  NOT NULL default '',
+   `Lang` char(2)  NOT NULL default 'ru',
+   `FileType` char(4)  NOT NULL default 'fb2',
+   `Year` smallint(6) NOT NULL default '0',
+   `Deleted` char(1)  NOT NULL default '',
+   `Ver` varchar(8) character set utf8 NOT NULL default '',
+   `FileAuthor` varchar(64) character set utf8 NOT NULL,
+   `N` int(10) unsigned NOT NULL default '0',
+   `keywords` varchar(255) character set utf8 NOT NULL,
+   `md5` char(32) character set utf8 NOT NULL,
+   `Blocked` char(1) NOT NULL,
+   `Modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
+   PRIMARY KEY  (`BookId`),
+   UNIQUE KEY `md5` (`md5`),
+   KEY `Title` (`Title`),
+   KEY `Title1` (`Title1`),
+   KEY `Year` (`Year`),
+   KEY `Deleted` (`Deleted`),
+   KEY `SeqId` (`SeqId`),
+   KEY `FileType` (`FileType`),
+   KEY `Lang` (`Lang`),
+   KEY `FileSize` (`FileSize`),
+   KEY `FileAuthor` (`FileAuthor`),
+   KEY `N` (`N`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS `libcache` (
   `BookId` int(11) NOT NULL default '0',
   `TOC` text  NOT NULL,
@@ -164,7 +196,7 @@ CREATE TABLE IF NOT EXISTS `liblog` (
 CREATE TABLE IF NOT EXISTS `libmass` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `Time` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `Books` varchar(250) NOT NULL,
+  `Books` varchar(1000) NOT NULL,
   `N` int(11) NOT NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Books` (`Books`),

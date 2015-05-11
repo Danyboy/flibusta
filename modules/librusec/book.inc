@@ -28,7 +28,8 @@ function libBook() {
 	}
 	
 	if (!$b) {
-		$sth = SELECT("BookId FROM libbook LEFT JOIN libcacheid USING(BookId) WHERE (Id = '%s' OR md5 = '%s') AND NOT (Deleted&1)", $bo, $bo);
+		\\$sth = SELECT("BookId FROM libbook LEFT JOIN libcacheid USING(BookId) WHERE (Id = '%s' OR md5 = '%s') AND NOT (Deleted&1)", $bo, $bo);
+		$sth = SELECT("BookId FROM libbook LEFT JOIN libcacheid USING(BookId) WHERE (BookId = '%s') AND NOT (Deleted&1)", $bo, $bo);
 		for ($n = 0; $bb = db_result($sth); $n++) {
 			$r .= '<li>'.bl($b=$bb).' - '.avl(Sel("AvtorId FROM libavtor WHERE BookId = $bb LIMIT 1"));
 		}
