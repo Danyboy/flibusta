@@ -135,7 +135,7 @@ function SELECT($st) {
   $args = func_get_args();
   array_shift($args);
   if (isset($args[0]) and is_array($args[0])) $args = $args[0];
-  $sth = db_query("SELECT $st", $args);
+ // $sth = db_query("SELECT $st", $args);
   return $sth;
 }
 
