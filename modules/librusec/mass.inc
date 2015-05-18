@@ -89,7 +89,7 @@ function libMass() {
 					}
 					
 					if ($f && file_exists($f) && strlen($books) < 9990) {
-						$filelist .= " /www/lib/pages/\"$f\"";
+						$filelist .= " /var/www/html/\"$f\"";
 						$books .= '.'.$b;
 					}
 				}
@@ -127,7 +127,7 @@ function libMass() {
 				
 				$filename = "b.tmp/$id.zip";
 				if (!file_exists($filename)) {
-					exec ("zip -j -0 /www/lib/pages/$filename $filelist");	
+					exec ("zip -j -0 /var/www/html/$filename $filelist");	
 				}
 				
 				print "<br><br><a href='/$filename'>Подготовленный архив из $iii книг</a>";

@@ -1188,7 +1188,7 @@ function MakeZipFile($b, $dtp) {
 	
 	if ($dtp == 'fb2' || $dtp == '') {
 		if (!libGenerateFB2(getfb2filepath($b), $r)) {
-			exec ("ln -s /www/lib/pages/" . getfb2filepath($b) . " \"/www/lib/pages/$r\"");
+			exec ("ln -s /var/www/html/" . getfb2filepath($b) . " \"/var/www/html/$r\"");
 		}
 		exec ("zip -mj \"$zip\" \"$r\"");
 	} else {
@@ -1198,8 +1198,8 @@ function MakeZipFile($b, $dtp) {
 			$zip = '';
 		} else {
 			if ($zip != $r) {
-				exec ("zip -mj \"/www/lib/pages/$zip\" \"/www/lib/pages/$r\"");
-				if (($dtp == 'txt' || $dtp == 'html') && glob("i/".($b%100)."/$b/*")) exec ("zip -j \"/www/lib/pages/$zip\" /www/lib/pages/i/".($b%100)."/$b/*");
+				exec ("zip -mj \"/var/www/html/$zip\" \"/var/www/html/$r\"");
+				if (($dtp == 'txt' || $dtp == 'html') && glob("i/".($b%100)."/$b/*")) exec ("zip -j \"/var/www/html/lib/pages/$zip\" /var/www/html/i/".($b%100)."/$b/*");
 			}
 		}
 	}
