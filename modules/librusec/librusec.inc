@@ -1199,7 +1199,7 @@ function MakeZipFile($b, $dtp) {
 		} else {
 			if ($zip != $r) {
 				exec ("zip -mj \"/var/www/html/$zip\" \"/var/www/html/$r\"");
-				if (($dtp == 'txt' || $dtp == 'html') && glob("i/".($b%100)."/$b/*")) exec ("zip -j \"/var/www/html/lib/pages/$zip\" /var/www/html/i/".($b%100)."/$b/*");
+				if (($dtp == 'txt' || $dtp == 'html') && glob("i/".($b%100)."/$b/*")) exec ("zip -j \"/var/www/html/$zip\" /var/www/html/i/".($b%100)."/$b/*");
 			}
 		}
 	}
