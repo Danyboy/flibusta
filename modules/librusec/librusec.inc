@@ -153,6 +153,7 @@ function getfb2filepath($b) {
   $be = new BookExtractor( "/mnt/sshfs/torrent/Flibusta.Net", "/var/www/html/b/");
   $be->getBook($b);
   
+//  return "b/".substr($md5, 0, 2)."/$b.fb2";
   return "b/$b.fb2";
 }
 

@@ -12,7 +12,7 @@ class ArcName {
     public $to;
 
     public function isFit($id) {
-        return ($id > $this->from && $id < $this->to);
+        return ($id >= $this->from && $id <= $this->to);
     }
 }
 
@@ -30,14 +30,14 @@ class BookExtractor {
     }
 
     private function smartedList($list) {
-        $pattern = "/^d.fb2\\-([0-9]+)\\-([0-9]+).zip/";
+        $pattern = "/^(f|d)\\.fb2\\-([0-9]+)\\-([0-9]+).zip/";
         $filelist = [];
         foreach ($list as $value) {
             if(preg_match($pattern, $value, $matches)) {
                 $newfile = new ArcName();
                 $newfile->name = $value;
-                $newfile->from = $matches[1];
-                $newfile->to = $matches[2];
+                $newfile->from = $matches[2];
+                $newfile->to = $matches[3];
                 array_push($filelist, $newfile);
             }
         }
@@ -78,10 +78,6 @@ class BookExtractor {
     }
 }
 
-//$be = new BookExtractor( "D:/Projects/test/unzipfiles/books", "D:/Projects/test/unzipfiles/get");
 
-$be = new BookExtractor( "/mnt/sshfs/torrent/Flibusta.Net", "/var/www/html/b");
-//$be->getBook(172705);
+//$be = new BookExtractor( "/mnt/sshfs/torrent/Flibusta.Net", "/var/www/html/b.new/");
 //print ($be->getBook($argv[1]));
-
-//print ($be->getBook(172704));
