@@ -147,7 +147,7 @@ function Sel($st) {
 }
 
 function getfb2filepath($b) {
-  $md5 = Sel("md5 FROM libbook WHERE bookid = $b");
+  //$md5 = Sel("md5 FROM libbook WHERE bookid = $b");
   
   //TODO rewrite with zip
   $be = new BookExtractor( "/mnt/sshfs/torrent/Flibusta.Net", "/var/www/html/b/");
@@ -659,7 +659,7 @@ function DoLibRow($b, $style='') {
         $r .= " &nbsp; <a href=/b/$b/read>(читать)</a> &nbsp; ";
 //      if (!$a1->Blocked) {
         if ($user->uid) {
-          $r .= " <a href=/b/$b/download>(скачать)</a> ";
+          $r .= " <a href=/b/$b/download>(скачать fb2)</a> ";
           if (strstr($style,'seltype')) $r .= ' '.libSelectFileType($b);     
         } else {
           $r .= " <a href=/b/$b/fb2>(скачать fb2)</a>";// <a href=/b/$b/java>(на телефон)</a> ";

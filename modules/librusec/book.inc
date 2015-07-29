@@ -325,15 +325,7 @@ function libDownloadBook($a1, $dtp = 'fb2') {
 //    if ($dtp == 'java') drupal_goto("http://fb2java.com/upload?action=uploadUrl&url=http://lib.rus.ec/b/$b/fb2");
     $zip = MakeZipFile($b, $dtp);
     if ($zip) {
-        echo "$zip";
-        
-        //return drupal_goto("http://flibusta.eterfund.ru/b.fb2/Sent-Ekzyuperi_Malenkiy_Prints.79276.fb2.zip");
-    	//return drupal_goto($zip);
-    	//return drupal_goto($zip, 'status=bye');
-    	 
     	return drupal_goto("http://flibusta.eterfund.ru/" . $zip);
-    	
-    	//return drupal_goto("b.fb2/Sent-Ekzyuperi_Malenkiy_Prints.79276.fb2.zip111");
     } else {
     	return "Не получилось изготовить файл";
     } 
