@@ -220,7 +220,7 @@ function librusec_block($op='list', $delta='', $edit = array()) {
     return array ('content' => $r);
       
     case 'view.booksearch':
-      return array ('content' => "<br><form action=/booksearch>Поиск книг: <input name=ask value='$asc'><input type=submit value='искать!'></form>");
+      return array ('content' => "<br><form action=/booksearch>Поиск книг: <input name=keys value='$asc'><input type=submit value='искать!'></form>");
       
     case 'view.besta':
     case 'view.bestb':

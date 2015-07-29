@@ -3,6 +3,7 @@ Global $rates;
 $rates = array ('  ', 'нечитаемо', 'плохо', 'неплохо', 'хорошо', 'отлично!');
 
 module_load_include('inc', 'librusec', 'parser');
+module_load_include('inc', 'librusec', 'bookextractor');
 
 class DB {
   private $dbname, $idname;
@@ -147,7 +148,12 @@ function Sel($st) {
 
 function getfb2filepath($b) {
   $md5 = Sel("md5 FROM libbook WHERE bookid = $b");
-  return "b/".substr($md5, 0, 2)."/$b.fb2";
+  
+  //TODO rewrite with zip
+  $be = new BookExtractor( "/mnt/sshfs/torrent/Flibusta.Net", "/var/www/html/b/");
+  $be->getBook($b);
+  
+  return "b/$b.fb2";
 }
 
 function dbf ($s) { 
@@ -540,8 +546,8 @@ function DoLibRow($b, $style='') {
     if ($edit && $g) $g = '<tr><td>'.$g;
   }  
 
-  $Seq = ''; //libcg($cid1 = 'seq'.$b);
-  if (!$Seq) {
+  $Seq = new stdClass(); //libcg($cid1 = 'seq'.$b);
+//  if (!$Seq) {
     $Seq->BookId = $b;
     $sth = SELECT("* FROM libseq JOIN libseqname USING(SeqId) WHERE BookId = $b AND level < 100 ORDER BY level LIMIT 1");
     while ($ss = dbf($sth)) {
@@ -549,7 +555,7 @@ function DoLibRow($b, $style='') {
       $Seq->allids .= $ss->SeqId.' ';
     }  
     libcs($cid1, $Seq, "b$b");
-  }  
+//  }  
   if ($Seq->ids[0] == $Seq->ids[1]) $Seq->ids[1] = '';
   if (strstr($style,'sequence')) {
     if ($lastSecId != $Seq->allids) { // сериал поменялся
@@ -1165,9 +1171,9 @@ function MakeZipFile($b, $dtp) {
 	}
 	
 	//  if (file_exists($zip) && (filemtime($zip) < filemtime("b/$b.fb2") || filemtime($zip) < filemtime("modules/librusec/book.inc") || $user->uid == 1)) unlink ($zip);
-	if (file_exists($zip)) {
-		return $zip;	
-	}
+	//if (file_exists($zip)) {
+	//	return $zip;	
+	//}
 	
 	// $$ Stiver, 07.11.2009
 	// removed in order to allow downloads
