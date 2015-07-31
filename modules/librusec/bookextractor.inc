@@ -30,7 +30,7 @@ class BookExtractor {
     }
 
     private function smartedList($list) {
-        $pattern = "/^(f|d)\\.fb2\\-([0-9]+)\\-([0-9]+).zip/";
+        $pattern = "/^(f|d){0,1}?\\.{0,1}?fb2\\-([0-9]+)\\-([0-9]+).zip/";
         $filelist = [];
         foreach ($list as $value) {
             if(preg_match($pattern, $value, $matches)) {
