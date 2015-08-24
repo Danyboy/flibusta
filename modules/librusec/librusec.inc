@@ -468,6 +468,7 @@ function AvtorName($a, $t=' ', $LastFirst = 0) {
 function libSelectFileType($b = 0) {
   Global $user, $libSupportedFormats;
   if (!$user->uid || !variable_get('librusec_Convert', '')) return '';
+  if ( !variable_get('librusec_Convert', '')) return '';
   $seltp = "<select id=useropt name=dtp onchange=setuseropt('D')>";
   $tp = GetUserOpt('D');
   if (!$tp) $tp = 'fb2';
@@ -655,19 +656,23 @@ function DoLibRow($b, $style='') {
 
   if ($a1->Deleted != 7 ) {
     if ($tp == 'fb2') {
-      if (!strstr($style,'noread')) 
+      if (!strstr($style,'noread')) {
         $r .= " &nbsp; <a href=/b/$b/read>(читать)</a> &nbsp; ";
+        }
 //      if (!$a1->Blocked) {
-        if ($user->uid) {
-          $r .= " <a href=/b/$b/download>(скачать fb2)</a> ";
-          if (strstr($style,'seltype')) $r .= ' '.libSelectFileType($b);     
+        if ($user->uid) { 
+          $r .= " <a href=/b/$b/download>(скачать)</a> ";
+          if (strstr($style,'seltype')) $r .= ' '.libSelectFileType($b);
+
         } else {
-          $r .= " <a href=/b/$b/fb2>(скачать fb2)</a>";// <a href=/b/$b/java>(на телефон)</a> ";
+	  $r .= " <a href=/b/$b/epub>(скачать epub)</a>";
+	  $r .= " <a href=/b/$b/mobi>(скачать mobi)</a>";
+          $r .= " <a href=/b/$b/fb2>(скачать fb2)</a>";
         }  
-//      }  
-    } else {
-      $r .= " <a href=/b/$b/download>(скачать $tp)</a> ";
-    }  
+      }  
+//    } else {
+//      $r .= " <a href=/b/$b/download>(скачать $tp)</a> ";
+//    }  
     $corr = " <a href=/b/$b/edit>(исправить)</a> ";
     if ($edit) {
       $r.=  "$ast<td>".delbooklink($b, $title)."<td>$corr<td>";

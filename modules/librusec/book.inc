@@ -86,6 +86,7 @@ function libBook() {
 			libSaveLog($b, $u);
 			return DoLibRow($book,'authors noread')." $mailit $complain<br>".libRead($b)."<br><br>".DoLibRow($book,'rateonly');
 		case 'download':
+//			return libDownloadBook($book, arg(2));
 			return libDownloadBook($book, GetUserOpt('D'));
 		case 'fb2':
 		case 'txt':
@@ -93,7 +94,8 @@ function libBook() {
 		case 'rtf':
 	 // case 'pdf':
 	 // case 'pdb':
-	 // case 'epub':
+		case 'epub':
+		case 'mobi':
 	 // case 'lrf':
 	 // case 'java':
 			return libDownloadBook($book, arg(2));
@@ -306,24 +308,30 @@ function libDownloadBook($a1, $dtp = 'fb2') {
   
   $b = $a1->BookId;
 
- 
 //  if ($a1->Blocked && !user_access('библиотекарь')) 
 //    return libUnblockMes($a1);
 
   libSaveLog($b, $u);
+
+
+  $zip = MakeZipFile($b, $dtp);
   
   // FIX server name
   if ($a1->FileType == 'fb2') {
-  	if($dtp == 'epub') {
-  		return drupal_goto("http://www.austria-forum.org/wbtmaster/kindle/convert_fb2_service.groovy?url=http://flibusta.net/b/$b/download&out=epub");
-  	} else if($dtp == 'mobi') {
-  		return drupal_goto("http://www.austria-forum.org/wbtmaster/kindle/convert_fb2_service.groovy?url=http://flibusta.net/b/$b/download&out=mobi");
+  	if($dtp == 'epub' || $dtp == 'mobi') {
+		$FileName = MakeFileName($b);
+		$FileNameDtp = $FileName . "." . $dtp;
+
+  		$myFile = "/var/www/html/b." . $dtp . "/" . $FileNameDtp;
+  		if (!file_exists($myFile)) {
+			exec ("ebook-convert /var/www/html/b/$b.fb2 $myFile");
+	        }
+        	return drupal_goto("http://flibusta.eterfund.ru/b." . $dtp . "/" . $FileNameDtp);
   	}
   	
 //    if ($dtp == 'pdf') drupal_goto("http://www.fb2pdf.com/convert.php?auto=yes&url=http://lib.rus.ec/b/$b/fb2");
 //    if ($dtp == 'lrf') drupal_goto("http://onlinelrf.com/Convert.aspx?url=http://lib.rus.ec/b/$b/fb2");
 //    if ($dtp == 'java') drupal_goto("http://fb2java.com/upload?action=uploadUrl&url=http://lib.rus.ec/b/$b/fb2");
-    $zip = MakeZipFile($b, $dtp);
     if ($zip) {
     	return drupal_goto("http://flibusta.eterfund.ru/" . $zip);
     } else {
