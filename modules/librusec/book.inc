@@ -326,14 +326,22 @@ function libDownloadBook($a1, $dtp = 'fb2') {
   		if (!file_exists($myFile)) {
 			exec ("ebook-convert /var/www/html/b/$b.fb2 $myFile");
 	        }
-        	return drupal_goto("http://flibusta.eterfund.ru/b." . $dtp . "/" . $FileNameDtp);
+	        
+        	return drupal_goto('http://'.$_SERVER['HTTP_HOST'] . "/b." . $dtp . "/" . $FileNameDtp);
+        	
+        	//return drupal_goto("http://flibusta.eterfund.ru/b." . $dtp . "/" . $FileNameDtp);
+        	//Must work like 
+        	//return drupal_goto(""/b." . $dtp . "/" . $FileNameDtp);
+        	//But added ?q into link
+        	
+        	//return drupal_goto("http://" . DEBUG_SERVER_PREFIX . "b." . $dtp . "/" . $FileNameDtp);
   	}
   	
 //    if ($dtp == 'pdf') drupal_goto("http://www.fb2pdf.com/convert.php?auto=yes&url=http://lib.rus.ec/b/$b/fb2");
 //    if ($dtp == 'lrf') drupal_goto("http://onlinelrf.com/Convert.aspx?url=http://lib.rus.ec/b/$b/fb2");
 //    if ($dtp == 'java') drupal_goto("http://fb2java.com/upload?action=uploadUrl&url=http://lib.rus.ec/b/$b/fb2");
     if ($zip) {
-    	return drupal_goto("http://flibusta.eterfund.ru/" . $zip);
+    	return drupal_goto('http://' . $_SERVER['HTTP_HOST'] . '/' . $zip);
     } else {
     	return "Не получилось изготовить файл";
     } 

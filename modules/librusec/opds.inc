@@ -1,8 +1,10 @@
 <?php
 
 //define('DEBUG_SERVER_PREFIX', 'http://flibusta.net/'); // @TODO REMOVE LINK HARDCODE
-define('DEBUG_SERVER_PREFIX', 'http://flibusta.eterfund.ru/'); // @TODO REMOVE LINK HARDCODE
-define('IS_TEST_SERVER', true); // @TODO Remove stub
+//define('DEBUG_SERVER_PREFIX', 'http://flibusta.eterfund.ru/'); // @TODO REMOVE LINK HARDCODE
+define('DEBUG_SERVER_PREFIX', 'http://' . $_SERVER['HTTP_HOST'] . '/'); // @TODO REMOVE LINK HARDCODE
+define('IS_TEST_SERVER', false); // @TODO Remove stub
+//define('IS_TEST_SERVER', true); // @TODO Remove stub
 //const DEBUG_SERVER_PREFIX = ''; // production configuration
 
 define('OPDS_NEW_BOOKS_SEARCH_INTERVAL', 7); // 7 days
