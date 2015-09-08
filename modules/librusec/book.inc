@@ -328,13 +328,6 @@ function libDownloadBook($a1, $dtp = 'fb2') {
 	        }
 	        
         	return drupal_goto('http://'.$_SERVER['HTTP_HOST'] . "/b." . $dtp . "/" . $FileNameDtp);
-        	
-        	//return drupal_goto("http://flibusta.eterfund.ru/b." . $dtp . "/" . $FileNameDtp);
-        	//Must work like 
-        	//return drupal_goto(""/b." . $dtp . "/" . $FileNameDtp);
-        	//But added ?q into link
-        	
-        	//return drupal_goto("http://" . DEBUG_SERVER_PREFIX . "b." . $dtp . "/" . $FileNameDtp);
   	}
   	
 //    if ($dtp == 'pdf') drupal_goto("http://www.fb2pdf.com/convert.php?auto=yes&url=http://lib.rus.ec/b/$b/fb2");

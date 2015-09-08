@@ -1,7 +1,5 @@
 <?php
 
-//define('DEBUG_SERVER_PREFIX', 'http://flibusta.net/'); // @TODO REMOVE LINK HARDCODE
-//define('DEBUG_SERVER_PREFIX', 'http://flibusta.eterfund.ru/'); // @TODO REMOVE LINK HARDCODE
 define('DEBUG_SERVER_PREFIX', 'http://' . $_SERVER['HTTP_HOST'] . '/'); // @TODO REMOVE LINK HARDCODE
 define('IS_TEST_SERVER', false); // @TODO Remove stub
 //define('IS_TEST_SERVER', true); // @TODO Remove stub
