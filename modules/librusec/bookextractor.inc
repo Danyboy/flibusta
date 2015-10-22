@@ -46,7 +46,15 @@ class BookExtractor {
 
     private function findAtSmartedList($sl, $id) {
         $filter = array_filter($sl, function($var) use ($id) {return $var->isFit($id);});
-        return current($filter);
+        $currentFilter = current($filter);
+        if(!isset($currentFilter)) {
+            echo "Book not found\n";
+        }
+        if(empty($filter)) {
+            echo "Archive with book not found\n";
+            return null;
+        }
+        return $currentFilter;
     }
 
     private function unArch($filename, $id) {
@@ -79,5 +87,7 @@ class BookExtractor {
 }
 
 
-//$be = new BookExtractor( "/mnt/sshfs/torrent/Flibusta.Net", "/var/www/html/b.new/");
-//print ($be->getBook($argv[1]));
+if (!empty($argv)){
+    $be = new BookExtractor( "/mnt/sshfs/Flibusta.Net/", "/var/www/html/b.new/");
+    print ($be->getBook($argv[1]));
+}
