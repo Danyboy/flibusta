@@ -150,7 +150,7 @@ function getfb2filepath($b) {
   //$md5 = Sel("md5 FROM libbook WHERE bookid = $b");
   
   //TODO rewrite with zip
-  $be = new BookExtractor( "/mnt/sshfs/Flibusta.Net", "/var/www/html/b/");
+  $be = new BookExtractor( "/mnt/sshfs/fb2.Flibusta.Net", "/var/www/html/b/");
   $be->getBook($b);
   
 //  return "b/".substr($md5, 0, 2)."/$b.fb2";

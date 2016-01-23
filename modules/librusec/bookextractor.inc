@@ -61,6 +61,7 @@ class BookExtractor {
         $zip = new ZipArchive;
         if ($zip->open( $this->fromPath."/".$filename ) == true) {
             $extractedfilename = "".$id.".fb2";
+            //echo "Arg {$filename} {$id} \n";
             $zip->extractTo ( $this->toPath , $extractedfilename );
             $zip->close();
             return $extractedfilename;
@@ -88,6 +89,6 @@ class BookExtractor {
 
 
 if (!empty($argv)){
-    $be = new BookExtractor( "/mnt/sshfs/Flibusta.Net/", "/var/www/html/b.new/");
+    $be = new BookExtractor( "/mnt/sshfs/fb2.Flibusta.Net/", "/var/www/html/b/");
     print ($be->getBook($argv[1]));
 }
