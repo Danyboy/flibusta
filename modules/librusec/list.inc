@@ -121,6 +121,115 @@ function libAJAXlist() {
   print $pager;
 }
 
+
+function libAJAXlist2() {
+  Global $sa, $rd, $user;
+  $sa = $_GET['sa'];
+  $rd = $_GET['rd'];
+  $W = 'WHERE NOT (Deleted&1)';
+//  if (!$user->uid) {
+//  	$W .= ' AND NOT libbook.Blocked';
+//  }
+  $tm = $_GET['tm'];//Time
+
+  if ($t = p('t')) {$t=str_replace('*','%',$t); $W .= " AND Title LIKE '$t%'";}
+  if ($t = p('ln')) if ($t == 'Прочее') $W .= " AND LastName < 'Z' "; else $W .= " AND LastName LIKE '$t%'";
+  if ($t = p('fn')) $W .= " AND FirstName LIKE '$t%'";
+  if ($t = p('mn')) $W .= " AND MiddleName LIKE '$t%'";
+  if ($t = p('g')) {
+    $wst = '';
+    foreach (split (',', $t) as $l) {
+      if ($l = trim($l)) {
+        if ($wst) $wst .= " OR";
+        $wst .= " GenreDesc LIKE '%$l%' OR GenreCode LIKE '$l%'";
+      }  
+    }
+    $W .= " AND ($wst)";
+  }  
+  if ($t = p('e')) {
+    $wst = '';
+    foreach (split (',', $t) as $l) {
+      if ($l = trim($l)) {
+        if ($wst) $wst .= " OR";
+        $wst .= " FileType = '$l'";
+      }  
+    }
+    $W .= " AND ($wst)";
+  }  
+  if ($t = p('s1')) $W .= " AND FileSize >= '$t'*1024";
+  if ($t = p('s2')) $W .= " AND FileSize <= '$t'*1024";
+  if ($t = p('lng')) {
+    $wst = '';
+    foreach (split (',', $t) as $l) {
+      if ($l = trim($l)) {
+        if ($wst) $wst .= " OR";
+        $wst .= " Lang = '$l'";
+      }  
+    }
+    $W .= " AND ($wst)";
+  }
+  if ($_GET[st1]) $O = "Title"; 
+  if ($_GET[st2]) $O = "Title DESC"; 
+  if ($_GET[sln1]) $O = "LastName, FirstName, MiddleName, Title"; 
+  if ($_GET[sln2]) $O = "LastName DESC, FirstName, MiddleName, Title"; 
+  if ($_GET[sfn1]) $O = "FirstName"; 
+  if ($_GET[sfn2]) $O = "FirstName DESC"; 
+  if ($_GET[smn1]) $O = "MiddleName"; 
+  if ($_GET[smn2]) $O = "MiddleName DESC"; 
+  if ($_GET[sg1]) $O = "GenreDesc"; 
+  if ($_GET[sg2]) $O = "GenreDesc DESC"; 
+  if ($_GET[ss1]) $O = "FileSize"; 
+  if ($_GET[ss2]) $O = "FileSize DESC"; 
+  if ($_GET[se1]) $O = "FileType"; 
+  if ($_GET[se2]) $O = "FileType DESC"; 
+  if ($_GET[sd1]) $O = "BookId"; 
+  if ($_GET[sd2]) $O = "BookId DESC"; 
+   
+  if (!$O) $O = ' BookId DESC';
+
+  $se = $_GET['se'];//SeqId
+  $l = $_GET['l'];//Lang
+  $y = $_GET['y'];//Year
+
+  foreach (array('ln','fn','mn') as $qq)  
+    if ($_GET[$qq] || $_GET['s'.$qq.'1'] || $_GET['s'.$qq.'2']) 
+      $ja = "JOIN libavtor USING(BookId) JOIN libavtorname USING(AvtorId)";
+
+  if ($_GET['g'] || $_GET['sg1'] || $_GET['sg2']) {
+    $jg = "JOIN libgenre USING(BookId) JOIN libgenrelist USING(GenreId)";
+    $gb = "GROUP BY 1";
+  }
+  if ($_GET['ab']=='ab2') {
+    $SinBooks = 1; 
+    if (!$ja) $ja = "JOIN libavtor USING(BookId)";
+    $tot = Sel("COUNT(DISTINCT(libavtor.AvtorId)) FROM libbook $ja $jg $W");
+    $S = "SELECT libavtor.AvtorId AS a, COUNT(libbook.BookId) as N FROM libbook $ja $jg $W GROUP BY 1 ORDER BY $O";
+  } else { 
+    $tot = Sel ("COUNT(DISTINCT(libbook.BookId)) FROM libbook $ja $jg $W");
+    $S = "SELECT libbook.BookId AS b FROM libbook $ja $jg $W $gb ORDER BY $O";
+  }  
+//  Global $user; if ($user->uid == 1) print "<br>$S<br>";
+  $sth = pgq($S, $tot);
+  print "<div align=left>";
+  if (!$SinBooks) print downloadall('up'); //AnnChkbox('RB()').
+
+  for ($NN = 0; $a1 = dbf($sth); $NN++) {
+    if ($SinBooks) 
+      print avl1($a1->a)." ($a1->N)<br>\n"; 
+    else 
+      print DoLibRow($a1->b, 'authors checkbox genre annotation list'); 
+  }
+  if (!$SinBooks) print downloadall('down')."</form>";
+  print "</div><br>";
+  if (!$NN) print "Не нашлось ни единой книжки, удовлетворяющей вашим требованиям. Упростите.";
+  $pager = theme('pager');
+  $pager = preg_replace('|/makebooklist.page=(\d+)"|','javascript:pg($1)"',$pager);
+  $pager = preg_replace('|/makebooklist.page=(\d+)[^"]+"|','javascript:pg($1)"',$pager);
+  $pager = preg_replace('|/makebooklist[^"]*|','javascript:pg(0)',$pager);
+  print $pager;
+}
+
+
 function libList($type='', $FirstLetter='') {
   if ($FirstLetter && $type == 'b') {
     $FirstTitle = $FirstLetter;
