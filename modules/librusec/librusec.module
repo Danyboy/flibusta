@@ -105,7 +105,7 @@ function librusec_menu() {
 // внутренние входы
   $items['err404']   = array('title' => '404', 'page callback' =>'lib404', 'access arguments' => array('читать книги'), 'file' => '404.inc', 'type' => MENU_CALLBACK);
   $items['makebooklist']   = array('title' => 'AJAX booklist', 'page callback' =>'libAJAXlist', 'access arguments' => array('читать книги'), 'file' => 'list.inc', 'type' => MENU_CALLBACK);
-  $items['makebooklist2']   = array('title' => 'AJAX booklist', 'page callback' =>'libAJAXlist2', 'access arguments' => array('читать книги'), 'file' => 'list.inc', 'type' => MENU_CALLBACK);
+  $items['makebooklist_json']   = array('title' => 'AJAX booklist', 'page callback' =>'libAJAXlist_json', 'access arguments' => array('читать книги'), 'file' => 'list.inc', 'type' => MENU_CALLBACK);
   $items['mass']   = array('title' => 'Массовая обработка', 'page callback' =>'libMass', 'access arguments' => array('выкачивать помногу'), 'file' => 'mass.inc', 'type' => MENU_CALLBACK);
   $items['check'] = array('title' => 'Проверки', 'page callback' =>'libCheck', 'access arguments' => array('библиотекарь'), 'file' => 'check.inc', 'type' => MENU_CALLBACK);
   $items['tools'] = array('title' => 'Всякое', 'page callback' =>'libTools', 'access arguments' => array('исправлять книги'), 'file' => 'tools.inc', 'type' => MENU_CALLBACK);

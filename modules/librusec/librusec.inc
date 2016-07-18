@@ -509,9 +509,7 @@ function isBookLanguagePermitted($lang) {
 **********************************************************************************************************/
 function DoLibRow($b, $style='') {
   apc_incl('Dolibrow All');
-//style: checkbox, edit, authors, genre, annotation (if $sa), sequence, nolink, nobreak, rate
   Global $lastSecId, $la, $rd, $user, $ShowEN, $sa, $predgen, $rates;
-//  if (!user_access('выкачивать помногу') || LA() > 2) $dis = 'disabled';
   if ($b->BookId) {
     $a1 = $b;
     $b = $a1->BookId;
@@ -521,21 +519,8 @@ function DoLibRow($b, $style='') {
   if (!$a1 || !isBookLanguagePermitted($a1->Lang)) return ''; 
   $edit = strstr($style,'edit') && !variable_get('librusec_Mirror', '0');
   
-  /* 
-  if ($a1->Blocked) {
-    if (libBookDays($a1) > 31) {
-      $a1->Blocked = '';
-      Update(libbook, "Blocked = ''", "BookId = $b");
-    } elseif (user_access('библиотекарь')) {
-      $a1->Blocked = '';
-    } 
-    if ($a1->Blocked && !$user->uid) return '';
-  }  
-  */
-  
   if ($style != 'rateonly' && !libListBlackGG() && (!$user->uid || !strstr($style,'seltype')) && !user_access('библиотекарь')) {
     $cid = 'LibRow'.md5($b.$style.$sa.$ShowEN);
-  	//$cid = 'LibRow'.md5($b.$style.$sa.$ShowEN).$a1->Blocked;
     if ($r = libcg($cid)) 
       apc_incl('Dolibrow Hits');
   }    

@@ -122,14 +122,12 @@ function libAJAXlist() {
 }
 
 
-function libAJAXlist2() {
+function libAJAXlist_json() {
   Global $sa, $rd, $user;
   $sa = $_GET['sa'];
   $rd = $_GET['rd'];
   $W = 'WHERE NOT (Deleted&1)';
-//  if (!$user->uid) {
-//  	$W .= ' AND NOT libbook.Blocked';
-//  }
+
   $tm = $_GET['tm'];//Time
 
   if ($t = p('t')) {$t=str_replace('*','%',$t); $W .= " AND Title LIKE '$t%'";}
@@ -211,7 +209,6 @@ function libAJAXlist2() {
 //  Global $user; if ($user->uid == 1) print "<br>$S<br>";
   $sth = pgq($S, $tot);
   print "<div align=left>";
-  if (!$SinBooks) print downloadall('up'); //AnnChkbox('RB()').
 
   for ($NN = 0; $a1 = dbf($sth); $NN++) {
     if ($SinBooks) 
@@ -221,7 +218,6 @@ function libAJAXlist2() {
   }
   if (!$SinBooks) print downloadall('down')."</form>";
   print "</div><br>";
-  if (!$NN) print "Не нашлось ни единой книжки, удовлетворяющей вашим требованиям. Упростите.";
   $pager = theme('pager');
   $pager = preg_replace('|/makebooklist.page=(\d+)"|','javascript:pg($1)"',$pager);
   $pager = preg_replace('|/makebooklist.page=(\d+)[^"]+"|','javascript:pg($1)"',$pager);
